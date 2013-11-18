@@ -317,8 +317,11 @@ int tps65910_device_shutdown(void)
                 return -EIO;
         }
 	
-	val |= DEVCTRL_DEV_OFF_MASK;
-	val &= ~DEVCTRL_CK32K_CTRL_MASK;	//keep rtc
+	//val |= DEVCTRL_DEV_OFF_MASK;
+	//val &= ~DEVCTRL_CK32K_CTRL_MASK;	//keep rtc
+
+	val |= 0x80; // PWR_OFF_MASK (value seen in linux kernel source v3.11)
+
 	err = tps65910_reg_write(tps65910, TPS65910_DEVCTRL, val);
 	if (err) {
 		printk(KERN_ERR "Unable to read TPS65910 Reg at offset 0x%x= \
@@ -375,7 +378,7 @@ static struct i2c_driver tps65910_i2c_driver = {
 	.probe = tps65910_i2c_probe,
 	.remove = tps65910_i2c_remove,
 	.id_table = tps65910_i2c_id,
-	.shutdown   = tps65910_reboot,  //add by hushishuai for  reset wifi power in reboot
+	//.shutdown   = tps65910_reboot,  //add by hushishuai for  reset wifi power in reboot
 };
 
 static int __init tps65910_i2c_init(void)
